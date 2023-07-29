@@ -1,24 +1,57 @@
 import { MoreVert } from '@mui/icons-material';
 import { IconButton, TableCell, TableRow, Tooltip } from '@mui/material';
+import { Donation } from '../DonationList';
 
-interface DonationListItemProps {}
+interface DonationListItemProps {
+  donation: Donation;
+}
 
-const DonationListItem: React.FC<DonationListItemProps> = () => {
+const DonationListItem: React.FC<DonationListItemProps> = (props) => {
+  const { donation } = props;
+
+  const totalValue = (donation.quantity * donation.price).toFixed(2);
+
   return (
     <TableRow>
       <TableCell>
-        <Tooltip title="Pole 1" placement="top">
-          <div>Pole 1</div>
+        <Tooltip title="Data" placement="top">
+          <div>{donation.donationDate.toLocaleDateString()}</div>
         </Tooltip>
       </TableCell>
       <TableCell>
-        <div>Pole 2</div>
+        <Tooltip title="Darczyńca" placement="top">
+          <div>{donation.donor}</div>
+        </Tooltip>
       </TableCell>
       <TableCell>
-        <div>Pole 3</div>
+        <Tooltip title="Przedmiot darowizny" placement="top">
+          <div>{donation.donationItemType}</div>
+        </Tooltip>
       </TableCell>
       <TableCell>
-        <div>Pole 4</div>
+        <Tooltip title="Szczegóły" placement="top">
+          <div>{donation.donationItemDetails}</div>
+        </Tooltip>
+      </TableCell>
+      <TableCell>
+        <Tooltip title="Jednostka" placement="top">
+          <div>{donation.unit}</div>
+        </Tooltip>
+      </TableCell>
+      <TableCell>
+        <Tooltip title="Liczba jednostek" placement="top">
+          <div>{donation.quantity}</div>
+        </Tooltip>
+      </TableCell>
+      <TableCell>
+        <Tooltip title="Cena jendostkowa" placement="top">
+          <div>{donation.price.toFixed(2)}</div>
+        </Tooltip>
+      </TableCell>
+      <TableCell>
+        <Tooltip title="Wartość" placement="top">
+          <div>{totalValue}</div>
+        </Tooltip>
       </TableCell>
       <TableCell>
         <IconButton>
