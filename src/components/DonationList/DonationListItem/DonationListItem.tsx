@@ -9,8 +9,6 @@ interface DonationListItemProps {
 const DonationListItem: React.FC<DonationListItemProps> = (props) => {
   const { donation } = props;
 
-  const totalValue = (donation.quantity * donation.price).toFixed(2);
-
   return (
     <TableRow>
       <TableCell>
@@ -25,32 +23,25 @@ const DonationListItem: React.FC<DonationListItemProps> = (props) => {
       </TableCell>
       <TableCell>
         <Tooltip title="Przedmiot darowizny" placement="top">
-          <div>{donation.donationItemType}</div>
-        </Tooltip>
-      </TableCell>
-      <TableCell>
-        <Tooltip title="Szczegóły" placement="top">
-          <div>{donation.donationItemDetails}</div>
-        </Tooltip>
-      </TableCell>
-      <TableCell>
-        <Tooltip title="Jednostka" placement="top">
-          <div>{donation.unit}</div>
-        </Tooltip>
-      </TableCell>
-      <TableCell>
-        <Tooltip title="Liczba jednostek" placement="top">
-          <div>{donation.quantity}</div>
-        </Tooltip>
-      </TableCell>
-      <TableCell>
-        <Tooltip title="Cena jendostkowa" placement="top">
-          <div>{donation.price.toFixed(2)}</div>
+          <div>
+            {donation.items
+              .map(
+                (item) =>
+                  `${item.type}: ${item.details} (${item.quantity} ${item.unit})`
+              )
+              .join(', ')}
+          </div>
         </Tooltip>
       </TableCell>
       <TableCell>
         <Tooltip title="Wartość" placement="top">
-          <div>{totalValue}</div>
+          <div>
+            {donation.items
+              .reduce((sum, currentItem) => {
+                return sum + currentItem.quantity * currentItem.price;
+              }, 0)
+              .toFixed(2)}
+          </div>
         </Tooltip>
       </TableCell>
       <TableCell>
