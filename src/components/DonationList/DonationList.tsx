@@ -10,6 +10,12 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import DonationListItem from './DonationListItem/DonationListItem';
+import { Button } from '@mui/material';
+import { Add } from '@mui/icons-material';
+import DonationForm from '../DonationForm/DonationForm';
+import { useState } from 'react';
+
+import classes from './DonationList.module.css';
 
 const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -129,9 +135,27 @@ interface DonationItem {
 interface DonationListProps {}
 
 const DonationList: React.FC<DonationListProps> = () => {
+  const [openForm, setOpenForm] = useState<boolean>(false);
+
+  const handleCreateNewItemClick = () => setOpenForm(true);
+
+  const handleCancelNewItemClick = () => setOpenForm(false);
+
   return (
     <Card>
       <CardContent>
+        <Button
+          className={classes.btn}
+          variant="contained"
+          color="primary"
+          startIcon={<Add />}
+          onClick={handleCreateNewItemClick}
+        >
+          Utwórz nowy wpis
+        </Button>
+        {openForm && (
+          <DonationForm id="" open onCancel={handleCancelNewItemClick} />
+        )}
         <TableContainer component={Paper}>
           <Table>
             <TableHead>
