@@ -1,8 +1,8 @@
-import { useReducer } from 'react';
+import { useReducer, useState } from 'react';
 import {
-  Autocomplete,
   Box,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -12,8 +12,11 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Dayjs } from 'dayjs';
+import DonationItemForm from './DonationItemForm/DonationItemForm';
+import { DonationItemFormValues } from './DonationItemForm/DonationItemForm';
 
 import classes from './DonationForm.module.css';
+import { Add } from '@mui/icons-material';
 
 interface DonationFormProps {
   id: string;
@@ -25,14 +28,6 @@ interface DonationFormValues {
   donationDate: string;
   donor: string;
   items: DonationItemFormValues[];
-}
-
-interface DonationItemFormValues {
-  type: string;
-  details: string;
-  unit: string;
-  quantity: number;
-  price: number;
 }
 
 interface InputFormValue {
@@ -59,7 +54,7 @@ interface AddItemAction extends DonationFormAction {
 }
 
 interface RemoveItemAction extends DonationFormAction {
-  payload: number;
+  payload: string;
 }
 
 const initialState: DonationFormValues = {
@@ -87,10 +82,8 @@ const donationFormReducer = (
         items: [...state.items, payload as DonationItemFormValues],
       };
     case DonationFormActionType.REMOVE_DONATION_ITEM:
-      const itemIndex = payload as number;
-      const filteredItems = state.items.filter(
-        (item, index) => index !== itemIndex
-      );
+      const itemId = payload as string;
+      const filteredItems = state.items.filter((item) => item.id !== itemId);
       return {
         ...state,
         items: filteredItems,
@@ -105,6 +98,28 @@ const DonationForm: React.FC<DonationFormProps> = ({ id, open, onCancel }) => {
   const dialogTitle = isEdit ? 'Edycja wpisu' : 'Tworzenie nowego wpisu';
 
   const [formState, dispatch] = useReducer(donationFormReducer, initialState);
+
+  const [openItemForm, setOpenItemForm] = useState<boolean>(false);
+
+  const handleCreateNewItemClick = () => setOpenItemForm(true);
+
+  const handleCloseNewItemFormClick = () => setOpenItemForm(false);
+
+  const handleAddNewItemClick = (
+    donationItemFormValues: DonationItemFormValues
+  ) => {
+    dispatch({
+      type: DonationFormActionType.ADD_DONATION_ITEM,
+      payload: donationItemFormValues,
+    } as AddItemAction);
+  };
+
+  const handleDeleteItemClick = (id: string) => {
+    dispatch({
+      type: DonationFormActionType.REMOVE_DONATION_ITEM,
+      payload: id,
+    } as RemoveItemAction);
+  };
 
   const handleSubmitClick = () => {
     console.log(formState);
@@ -146,66 +161,64 @@ const DonationForm: React.FC<DonationFormProps> = ({ id, open, onCancel }) => {
   };
 
   return (
-    <Dialog open={open}>
-      <DialogTitle>
-        <div className={classes.title}>{dialogTitle}</div>
-      </DialogTitle>
-      <DialogContent>
-        <Box component="form">
-          <div className={classes.inputContainer}>
-            <FormControl className={classes.input}>
-              <DatePicker
-                label="Data darowizny"
-                onChange={handleDonationDateChange}
-              />
-            </FormControl>
-          </div>
-          <div className={classes.inputContainer}>
-            <FormControl className={classes.input}>
-              <TextField
-                label="Darczyńca"
-                name="donor"
-                onBlur={handleInputBlur}
-              />
-            </FormControl>
-          </div>
-          <div className={classes.inputContainer}>
-            <FormControl className={classes.input}>
-              <Autocomplete
-                options={[] as string[]}
-                freeSolo
-                multiple
-                renderInput={(params) => <TextField {...params} label="Typ" />}
-              />
-            </FormControl>
-          </div>
-          <div className={classes.inputContainer}>
-            <FormControl className={classes.input}>
-              <TextField label="Szczegóły" />
-            </FormControl>
-          </div>
-          <div className={classes.inputContainer}>
-            <FormControl className={classes.input}>
-              <TextField label="Jednostka" />
-            </FormControl>
-          </div>
-          <div className={classes.inputContainer}>
-            <FormControl className={classes.input}>
-              <TextField label="Ilość" />
-            </FormControl>
-          </div>
-          <div className={classes.inputContainer}>
-            <FormControl className={classes.input}>
-              <TextField label="Cena" />
-            </FormControl>
-          </div>
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleCancelClick}>Anuluj</Button>
-        <Button onClick={handleSubmitClick}>Zapisz</Button>
-      </DialogActions>
-    </Dialog>
+    <>
+      <Dialog open={open}>
+        <DialogTitle>
+          <div className={classes.title}>{dialogTitle}</div>
+        </DialogTitle>
+        <DialogContent>
+          <Box component="form">
+            <div className={classes.inputContainer}>
+              <FormControl className={classes.input}>
+                <DatePicker
+                  label="Data darowizny"
+                  onChange={handleDonationDateChange}
+                />
+              </FormControl>
+            </div>
+            <div className={classes.inputContainer}>
+              <FormControl className={classes.input}>
+                <TextField
+                  label="Darczyńca"
+                  name="donor"
+                  onBlur={handleInputBlur}
+                />
+              </FormControl>
+            </div>
+            <div className={classes.inputContainer}>
+              {formState.items.map((item) => (
+                <Chip
+                  key={item.id}
+                  size="medium"
+                  label={`${item.type} ${item.details} (${item.quantity} ${item.unit} x ${item.price} zł)`}
+                  onDelete={() => handleDeleteItemClick(item.id)}
+                />
+              ))}
+            </div>
+          </Box>
+          <Button
+            className={classes.btn}
+            variant="contained"
+            color="primary"
+            startIcon={<Add />}
+            onClick={handleCreateNewItemClick}
+          >
+            Dodaj przedmiot darowizny
+          </Button>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelClick}>Anuluj</Button>
+          <Button onClick={handleSubmitClick}>Zapisz</Button>
+        </DialogActions>
+      </Dialog>
+      {openItemForm && (
+        <DonationItemForm
+          onAdd={handleAddNewItemClick}
+          open
+          onClose={handleCloseNewItemFormClick}
+        />
+      )}
+    </>
   );
 };
 

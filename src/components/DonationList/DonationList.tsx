@@ -145,7 +145,7 @@ const DonationList: React.FC<DonationListProps> = () => {
     <Card>
       <CardContent>
         <Button
-          className={classes.btn}
+          className={classes.createBtn}
           variant="contained"
           color="primary"
           startIcon={<Add />}
