@@ -35,7 +35,7 @@ const DonationItemForm: React.FC<DonationItemFormProps> = ({
 }) => {
   const [donationItem, setDonationItem] = useState<DonationItemFormValues>();
 
-  const handleAddClick = () => {
+  const handleAddDonationItem = () => {
     if (donationItem) {
       donationItem.id = uuidv4();
       onAdd(donationItem);
@@ -43,7 +43,7 @@ const DonationItemForm: React.FC<DonationItemFormProps> = ({
     onClose();
   };
 
-  const handleCancelClick = () => {
+  const handleCancel = () => {
     onClose();
   };
 
@@ -112,8 +112,8 @@ const DonationItemForm: React.FC<DonationItemFormProps> = ({
         </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCancelClick}>Anuluj</Button>
-        <Button onClick={handleAddClick}>Dodaj</Button>
+        <Button onClick={handleCancel}>Anuluj</Button>
+        <Button onClick={handleAddDonationItem}>Dodaj</Button>
       </DialogActions>
     </Dialog>
   );
