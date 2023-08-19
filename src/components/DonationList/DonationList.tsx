@@ -137,9 +137,9 @@ interface DonationListProps {}
 const DonationList: React.FC<DonationListProps> = () => {
   const [openForm, setOpenForm] = useState<boolean>(false);
 
-  const handleCreateNewItemClick = () => setOpenForm(true);
+  const handleCreateNewItem = () => setOpenForm(true);
 
-  const handleCancelNewItemClick = () => setOpenForm(false);
+  const handleCancelCreateNewItem = () => setOpenForm(false);
 
   return (
     <Card>
@@ -149,12 +149,12 @@ const DonationList: React.FC<DonationListProps> = () => {
           variant="contained"
           color="primary"
           startIcon={<Add />}
-          onClick={handleCreateNewItemClick}
+          onClick={handleCreateNewItem}
         >
           Utwórz nowy wpis
         </Button>
         {openForm && (
-          <DonationForm id="" open onCancel={handleCancelNewItemClick} />
+          <DonationForm id="" open onCancel={handleCancelCreateNewItem} />
         )}
         <TableContainer component={Paper}>
           <Table>

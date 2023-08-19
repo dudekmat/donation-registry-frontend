@@ -101,11 +101,11 @@ const DonationForm: React.FC<DonationFormProps> = ({ id, open, onCancel }) => {
 
   const [openItemForm, setOpenItemForm] = useState<boolean>(false);
 
-  const handleCreateNewItemClick = () => setOpenItemForm(true);
+  const handleOpenDonationItemForm = () => setOpenItemForm(true);
 
-  const handleCloseNewItemFormClick = () => setOpenItemForm(false);
+  const handleCloseDonationItemForm = () => setOpenItemForm(false);
 
-  const handleAddNewItemClick = (
+  const handleAddNewDonationItem = (
     donationItemFormValues: DonationItemFormValues
   ) => {
     dispatch({
@@ -114,18 +114,18 @@ const DonationForm: React.FC<DonationFormProps> = ({ id, open, onCancel }) => {
     } as AddItemAction);
   };
 
-  const handleDeleteItemClick = (id: string) => {
+  const handleDeleteDonationItem = (id: string) => {
     dispatch({
       type: DonationFormActionType.REMOVE_DONATION_ITEM,
       payload: id,
     } as RemoveItemAction);
   };
 
-  const handleSubmitClick = () => {
+  const handleSubmitForm = () => {
     console.log(formState);
   };
 
-  const handleCancelClick = () => {
+  const handleCancel = () => {
     onCancel();
   };
 
@@ -191,31 +191,30 @@ const DonationForm: React.FC<DonationFormProps> = ({ id, open, onCancel }) => {
                   key={item.id}
                   size="medium"
                   label={`${item.type} ${item.details} (${item.quantity} ${item.unit} x ${item.price} zł)`}
-                  onDelete={() => handleDeleteItemClick(item.id)}
+                  onDelete={() => handleDeleteDonationItem(item.id)}
                 />
               ))}
             </div>
           </Box>
           <Button
-            className={classes.btn}
             variant="contained"
             color="primary"
             startIcon={<Add />}
-            onClick={handleCreateNewItemClick}
+            onClick={handleOpenDonationItemForm}
           >
             Dodaj przedmiot darowizny
           </Button>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelClick}>Anuluj</Button>
-          <Button onClick={handleSubmitClick}>Zapisz</Button>
+          <Button onClick={handleCancel}>Anuluj</Button>
+          <Button onClick={handleSubmitForm}>Zapisz</Button>
         </DialogActions>
       </Dialog>
       {openItemForm && (
         <DonationItemForm
-          onAdd={handleAddNewItemClick}
+          onAdd={handleAddNewDonationItem}
           open
-          onClose={handleCloseNewItemFormClick}
+          onClose={handleCloseDonationItemForm}
         />
       )}
     </>
