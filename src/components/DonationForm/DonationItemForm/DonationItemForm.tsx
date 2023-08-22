@@ -12,6 +12,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 import classes from './DonationItemForm.module.css';
+import { Add } from '@mui/icons-material';
 
 interface DonationItemFormProps {
   open: boolean;
@@ -34,6 +35,14 @@ const DonationItemForm: React.FC<DonationItemFormProps> = ({
   onClose,
 }) => {
   const [donationItem, setDonationItem] = useState<DonationItemFormValues>();
+
+  const isFormValid = Boolean(
+    donationItem?.type &&
+      donationItem.details &&
+      donationItem.unit &&
+      donationItem.quantity &&
+      donationItem.price
+  );
 
   const handleAddDonationItem = () => {
     if (donationItem) {
@@ -113,7 +122,15 @@ const DonationItemForm: React.FC<DonationItemFormProps> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={handleCancel}>Anuluj</Button>
-        <Button onClick={handleAddDonationItem}>Dodaj</Button>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<Add />}
+          disabled={!isFormValid}
+          onClick={handleAddDonationItem}
+        >
+          Dodaj
+        </Button>
       </DialogActions>
     </Dialog>
   );

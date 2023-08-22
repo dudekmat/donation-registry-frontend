@@ -16,7 +16,7 @@ import DonationItemForm from './DonationItemForm/DonationItemForm';
 import { DonationItemFormValues } from './DonationItemForm/DonationItemForm';
 
 import classes from './DonationForm.module.css';
-import { Add } from '@mui/icons-material';
+import { Add, Save } from '@mui/icons-material';
 
 interface DonationFormProps {
   id: string;
@@ -97,9 +97,19 @@ const DonationForm: React.FC<DonationFormProps> = ({ id, open, onCancel }) => {
   const isEdit = Boolean(id);
   const dialogTitle = isEdit ? 'Edycja wpisu' : 'Tworzenie nowego wpisu';
 
-  const [formState, dispatch] = useReducer(donationFormReducer, initialState);
+  const [donationForm, dispatch] = useReducer(
+    donationFormReducer,
+    initialState
+  );
 
   const [openItemForm, setOpenItemForm] = useState<boolean>(false);
+
+  const isFormValid = Boolean(
+    donationForm?.donationDate &&
+      donationForm.donor &&
+      donationForm.items &&
+      donationForm.items.length > 0
+  );
 
   const handleOpenDonationItemForm = () => setOpenItemForm(true);
 
@@ -122,7 +132,7 @@ const DonationForm: React.FC<DonationFormProps> = ({ id, open, onCancel }) => {
   };
 
   const handleSubmitForm = () => {
-    console.log(formState);
+    console.log(donationForm);
   };
 
   const handleCancel = () => {
@@ -186,7 +196,7 @@ const DonationForm: React.FC<DonationFormProps> = ({ id, open, onCancel }) => {
               </FormControl>
             </div>
             <div className={classes.inputContainer}>
-              {formState.items.map((item) => (
+              {donationForm.items.map((item) => (
                 <Chip
                   key={item.id}
                   size="medium"
@@ -207,7 +217,15 @@ const DonationForm: React.FC<DonationFormProps> = ({ id, open, onCancel }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCancel}>Anuluj</Button>
-          <Button onClick={handleSubmitForm}>Zapisz</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<Save />}
+            disabled={!isFormValid}
+            onClick={handleSubmitForm}
+          >
+            Zapisz
+          </Button>
         </DialogActions>
       </Dialog>
       {openItemForm && (
